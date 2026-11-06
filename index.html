@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista de tareas</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px 16px;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: #f4f6f8;
+      color: #222;
+    }
+
+    main {
+      max-width: 520px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+      margin: 0 0 20px;
+      font-size: 1.6rem;
+      text-align: center;
+    }
+
+    .formulario {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 10px 12px;
+      font-size: 1rem;
+      border: 1px solid #ccd2d9;
+      border-radius: 8px;
+    }
+
+    button {
+      padding: 10px 16px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      background: #3b82f6;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2563eb;
+    }
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #eceff2;
+    }
+
+        li span {
+      flex: 1;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    li button {
+      flex-shrink: 0;
+    }
+
+    li input[type="checkbox"] {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    /* Estilo para tareas completadas */
+    li.completada span {
+      text-decoration: line-through;
+      opacity: 0.4;
+      filter: blur(1px);
+    }
+
+    @media (max-width: 480px) {
+      main {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Lista de tareas</h1>
+
+    <div class="formulario">
+      <input type="text" id="nueva-tarea" placeholder="Escribe una tarea...">
+      <button id="btn-agregar">Agregar</button>
+    </div>
+
+    <ul id="lista-tareas"></ul>
+  </main>
+    <script>
+    // 1. Buscar los elementos de la página
+    const campoTexto = document.getElementById("nueva-tarea");
+    const botonAgregar = document.getElementById("btn-agregar");
+    const listaTareas = document.getElementById("lista-tareas");
+
+    // 2. Función que agrega una tarea
+    function agregarTarea() {
+      const texto = campoTexto.value.trim();
+
+      if (texto === "") {
+        return;
+      }
+
+      const li = document.createElement("li");
+
+      // Crear el check
+      const check = document.createElement("input");
+      check.type = "checkbox";
+
+      const span = document.createElement("span");
+      span.textContent = texto;
+
+      // Al marcar el check, marcar/desmarcar la tarea
+      check.addEventListener("change", function () {
+        li.classList.toggle("completada", check.checked);
+      });
+
+      // Al hacer clic en el texto, marcar/desmarcar como completada
+      // CAMBIO: al hacer clic en el texto, se cambia el check y la tarea
+      span.addEventListener("click", function () {
+        check.checked = !check.checked;
+        li.classList.toggle("completada", check.checked);
+      });
+
+
+      // Crear el botón de borrar
+      const botonBorrar = document.createElement("button");
+      botonBorrar.textContent = "Borrar";
+      botonBorrar.addEventListener("click", function () {
+        li.remove();
+      });
+
+
+      li.appendChild(check);
+      li.appendChild(span);
+      li.appendChild(botonBorrar); 
+      listaTareas.appendChild(li);
+
+      campoTexto.value = "";
+      campoTexto.focus();
+    }
+
+    // 3. Escuchar los eventos del usuario
+    botonAgregar.addEventListener("click", agregarTarea);
+
+    campoTexto.addEventListener("keydown", function (evento) {
+      if (evento.key === "Enter") {
+        agregarTarea();
+      }
+    });
+  </script>
+</body>
+</html>
