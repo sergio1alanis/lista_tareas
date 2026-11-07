@@ -93,6 +93,40 @@
       cursor: pointer;
     }
 
+        dialog {
+      border: none;
+      border-radius: 12px;
+      padding: 24px;
+      width: 360px;
+      max-width: 90%;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    dialog::backdrop {
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    dialog p {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .acciones {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    button.secundario {
+      background: #e5e7eb;
+      color: #222;
+    }
+
+    button.secundario:hover {
+      background: #d1d5db;
+    }
+
     /* Estilo para tareas completadas */
     li.completada span {
       text-decoration: line-through;
@@ -118,11 +152,24 @@
 
     <ul id="lista-tareas"></ul>
   </main>
+
+    <dialog id="dialogo-confirmar">
+    <p>Confirma borrar tarea no completada?</p>
+    <div class="acciones">
+      <button id="btn-cancelar" class="secundario">Cancelar</button>
+      <button id="btn-confirmar">Confirmar</button>
+    </div>
+  </dialog>
+
     <script>
     // 1. Buscar los elementos de la página
     const campoTexto = document.getElementById("nueva-tarea");
     const botonAgregar = document.getElementById("btn-agregar");
     const listaTareas = document.getElementById("lista-tareas");
+    const dialogo = document.getElementById("dialogo-confirmar");
+    const botonConfirmar = document.getElementById("btn-confirmar");
+    const botonCancelar = document.getElementById("btn-cancelar");
+    let tareaPendiente = null;
 
     // 2. Función que agrega una tarea
     function agregarTarea() {
@@ -153,12 +200,16 @@
         li.classList.toggle("completada", check.checked);
       });
 
-
-      // Crear el botón de borrar
+           // Crear el botón de borrar
       const botonBorrar = document.createElement("button");
       botonBorrar.textContent = "Borrar";
       botonBorrar.addEventListener("click", function () {
-        li.remove();
+        if (li.classList.contains("completada")) {
+          li.remove();
+        } else {
+          tareaPendiente = li;
+          dialogo.showModal();
+        }
       });
 
 
@@ -178,6 +229,21 @@
       if (evento.key === "Enter") {
         agregarTarea();
       }
+    });
+
+        botonConfirmar.addEventListener("click", function () {
+      if (tareaPendiente) {
+        tareaPendiente.remove();
+      }
+      dialogo.close();
+    });
+
+    botonCancelar.addEventListener("click", function () {
+      dialogo.close();
+    });
+
+    dialogo.addEventListener("close", function () {
+      tareaPendiente = null;
     });
   </script>
 </body>
