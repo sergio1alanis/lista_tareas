@@ -76,7 +76,7 @@
       border-bottom: 1px solid #eceff2;
     }
 
-        li span {
+    li span {
       flex: 1;
       min-width: 0;
       overflow-wrap: anywhere;
@@ -93,7 +93,7 @@
       cursor: pointer;
     }
 
-        dialog {
+    dialog {
       border: none;
       border-radius: 12px;
       padding: 24px;
@@ -153,7 +153,7 @@
     <ul id="lista-tareas"></ul>
   </main>
 
-    <dialog id="dialogo-confirmar">
+  <dialog id="dialogo-confirmar">
     <p>Confirma borrar tarea no completada?</p>
     <div class="acciones">
       <button id="btn-cancelar" class="secundario">Cancelar</button>
@@ -161,7 +161,7 @@
     </div>
   </dialog>
 
-    <script>
+  <script>
     // 1. Buscar los elementos de la página
     const campoTexto = document.getElementById("nueva-tarea");
     const botonAgregar = document.getElementById("btn-agregar");
@@ -169,9 +169,83 @@
     const dialogo = document.getElementById("dialogo-confirmar");
     const botonConfirmar = document.getElementById("btn-confirmar");
     const botonCancelar = document.getElementById("btn-cancelar");
-    let tareaPendiente = null;
 
-    // 2. Función que agrega una tarea
+    // 2. Datos de la app
+    const CLAVE = "tareas-guardadas";   // el "nombre de la etiqueta" en localStorage
+    let tareas = [];                    // la lista de datos de las tareas
+    let tareaPendiente = null;          // la tarea que espera confirmación de borrado
+
+    // 3. Guardar y cargar
+    function guardar() {
+      try {
+        localStorage.setItem(CLAVE, JSON.stringify(tareas));
+      } catch (error) {
+        console.error("No se pudo guardar:", error);
+      }
+    }
+
+    function cargar() {
+      try {
+        const texto = localStorage.getItem(CLAVE);
+        if (texto === null) {
+          return [];
+        }
+        const lista = JSON.parse(texto);
+        return Array.isArray(lista) ? lista : [];
+      } catch (error) {
+        console.error("No se pudo cargar:", error);
+        return [];
+      }
+    }
+
+    // 4. Dibujar una tarea en pantalla (a partir de sus datos)
+    function crearElementoTarea(tarea) {
+      const li = document.createElement("li");
+      li.classList.toggle("completada", tarea.completada);
+
+      const check = document.createElement("input");
+      check.type = "checkbox";
+      check.checked = tarea.completada;
+
+      const span = document.createElement("span");
+      span.textContent = tarea.texto;
+
+      const botonBorrar = document.createElement("button");
+      botonBorrar.textContent = "Borrar";
+
+      // Cambiar el estado completada / no completada
+      function cambiarEstado(completada) {
+        tarea.completada = completada;
+        check.checked = completada;
+        li.classList.toggle("completada", completada);
+        guardar();
+      }
+
+      check.addEventListener("change", function () {
+        cambiarEstado(check.checked);
+      });
+
+      span.addEventListener("click", function () {
+        cambiarEstado(!tarea.completada);
+      });
+
+      // Borrar: directo si está completada, con confirmación si no
+      botonBorrar.addEventListener("click", function () {
+        if (tarea.completada) {
+          borrarTarea(tarea, li);
+        } else {
+          tareaPendiente = { tarea: tarea, li: li };
+          dialogo.showModal();
+        }
+      });
+
+      li.appendChild(check);
+      li.appendChild(span);
+      li.appendChild(botonBorrar);
+      return li;
+    }
+
+    // 5. Agregar y borrar
     function agregarTarea() {
       const texto = campoTexto.value.trim();
 
@@ -179,50 +253,29 @@
         return;
       }
 
-      const li = document.createElement("li");
+      const tarea = {
+        id: Date.now() + "-" + Math.random().toString(36).slice(2),
+        texto: texto,
+        completada: false
+      };
 
-      // Crear el check
-      const check = document.createElement("input");
-      check.type = "checkbox";
-
-      const span = document.createElement("span");
-      span.textContent = texto;
-
-      // Al marcar el check, marcar/desmarcar la tarea
-      check.addEventListener("change", function () {
-        li.classList.toggle("completada", check.checked);
-      });
-
-      // Al hacer clic en el texto, marcar/desmarcar como completada
-      // CAMBIO: al hacer clic en el texto, se cambia el check y la tarea
-      span.addEventListener("click", function () {
-        check.checked = !check.checked;
-        li.classList.toggle("completada", check.checked);
-      });
-
-           // Crear el botón de borrar
-      const botonBorrar = document.createElement("button");
-      botonBorrar.textContent = "Borrar";
-      botonBorrar.addEventListener("click", function () {
-        if (li.classList.contains("completada")) {
-          li.remove();
-        } else {
-          tareaPendiente = li;
-          dialogo.showModal();
-        }
-      });
-
-
-      li.appendChild(check);
-      li.appendChild(span);
-      li.appendChild(botonBorrar); 
-      listaTareas.appendChild(li);
+      tareas.push(tarea);
+      listaTareas.appendChild(crearElementoTarea(tarea));
+      guardar();
 
       campoTexto.value = "";
       campoTexto.focus();
     }
 
-    // 3. Escuchar los eventos del usuario
+    function borrarTarea(tarea, li) {
+      tareas = tareas.filter(function (t) {
+        return t.id !== tarea.id;
+      });
+      li.remove();
+      guardar();
+    }
+
+    // 6. Escuchar los eventos del usuario
     botonAgregar.addEventListener("click", agregarTarea);
 
     campoTexto.addEventListener("keydown", function (evento) {
@@ -231,9 +284,9 @@
       }
     });
 
-        botonConfirmar.addEventListener("click", function () {
+    botonConfirmar.addEventListener("click", function () {
       if (tareaPendiente) {
-        tareaPendiente.remove();
+        borrarTarea(tareaPendiente.tarea, tareaPendiente.li);
       }
       dialogo.close();
     });
@@ -244,6 +297,12 @@
 
     dialogo.addEventListener("close", function () {
       tareaPendiente = null;
+    });
+
+    // 7. Al abrir la página: cargar las tareas guardadas y dibujarlas
+    tareas = cargar();
+    tareas.forEach(function (tarea) {
+      listaTareas.appendChild(crearElementoTarea(tarea));
     });
   </script>
 </body>
