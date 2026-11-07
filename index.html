@@ -12,55 +12,110 @@
 
     body {
       margin: 0;
-      padding: 24px 16px;
+      padding: 32px 16px;
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-      background: #f4f6f8;
-      color: #222;
+      background: #eef2f7;
+      color: #1f2937;
     }
 
     main {
       max-width: 520px;
       margin: 0 auto;
       background: #fff;
-      padding: 24px;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      padding: 28px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(31, 41, 55, 0.1);
     }
 
+    /* ---------- Título ---------- */
     h1 {
-      margin: 0 0 20px;
-      font-size: 1.6rem;
-      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 0;
+      font-size: 1.7rem;
+      font-weight: 600;
+      letter-spacing: -0.3px;
     }
 
+    .icono-titulo {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: #3b82f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icono-titulo svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .subtitulo {
+      margin: 6px 0 22px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #6b7280;
+    }
+
+    /* ---------- Formulario ---------- */
     .formulario {
       display: flex;
       gap: 8px;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     input[type="text"] {
       flex: 1;
-      padding: 10px 12px;
+      min-width: 0;
+      padding: 11px 14px;
       font-size: 1rem;
-      border: 1px solid #ccd2d9;
-      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
+    input[type="text"]:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+    }
+
+    /* ---------- Botones ---------- */
     button {
-      padding: 10px 16px;
+      padding: 11px 18px;
       font-size: 1rem;
+      font-weight: 500;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       background: #3b82f6;
       color: #fff;
       cursor: pointer;
+      transition: background 0.2s, color 0.2s, border-color 0.2s,
+                  transform 0.2s, box-shadow 0.2s;
     }
 
     button:hover {
       background: #2563eb;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
     }
 
+    button:active {
+      transform: translateY(0) scale(0.98);
+      box-shadow: none;
+    }
+
+    button:focus-visible,
+    input[type="checkbox"]:focus-visible {
+      outline: 2px solid #3b82f6;
+      outline-offset: 2px;
+    }
+
+    /* ---------- Lista ---------- */
     ul {
       list-style: none;
       margin: 0;
@@ -72,38 +127,93 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      padding: 12px 0;
-      border-bottom: 1px solid #eceff2;
+      padding: 12px 10px;
+      border-bottom: 1px solid #f1f3f5;
+      border-radius: 10px;
+      transition: background 0.2s;
+    }
+
+    li:hover {
+      background: #f5f8ff;
     }
 
     li span {
       flex: 1;
       min-width: 0;
       overflow-wrap: anywhere;
+      cursor: pointer;
+      transition: opacity 0.25s, filter 0.25s;
     }
 
+    /* Check redondo */
+    li input[type="checkbox"] {
+      -webkit-appearance: none;
+      appearance: none;
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      margin: 0;
+      border: 2px solid #cbd5e1;
+      border-radius: 50%;
+      background: #fff center / 14px no-repeat;
+      cursor: pointer;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    li input[type="checkbox"]:hover {
+      border-color: #3b82f6;
+    }
+
+    li input[type="checkbox"]:checked {
+      background-color: #3b82f6;
+      border-color: #3b82f6;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5l3 3 6-7' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    }
+
+    /* Botón Borrar (rojo suave) */
     li button {
       flex-shrink: 0;
+      padding: 7px 12px;
+      font-size: 0.85rem;
+      background: #fff;
+      color: #dc2626;
+      border: 1px solid #fecaca;
     }
 
-    li input[type="checkbox"] {
-      flex-shrink: 0;
-      width: 20px;
-      height: 20px;
-      cursor: pointer;
+    li button:hover {
+      background: #dc2626;
+      color: #fff;
+      border-color: #dc2626;
+      box-shadow: 0 4px 10px rgba(220, 38, 38, 0.25);
     }
 
+    /* Tareas completadas: tachadas y difuminadas */
+    li.completada span {
+      text-decoration: line-through;
+      opacity: 0.4;
+      filter: blur(1px);
+    }
+
+    /* ---------- Ventana de confirmación ---------- */
     dialog {
       border: none;
-      border-radius: 12px;
+      border-radius: 16px;
       padding: 24px;
       width: 360px;
       max-width: 90%;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    dialog[open] {
+      animation: aparecer 0.2s ease;
     }
 
     dialog::backdrop {
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(15, 23, 42, 0.45);
+    }
+
+    dialog[open]::backdrop {
+      animation: aparecer-fondo 0.2s ease;
     }
 
     dialog p {
@@ -120,30 +230,70 @@
 
     button.secundario {
       background: #e5e7eb;
-      color: #222;
+      color: #1f2937;
     }
 
     button.secundario:hover {
       background: #d1d5db;
+      box-shadow: none;
     }
 
-    /* Estilo para tareas completadas */
-    li.completada span {
-      text-decoration: line-through;
-      opacity: 0.4;
-      filter: blur(1px);
+    button.peligro {
+      background: #dc2626;
     }
 
+    button.peligro:hover {
+      background: #b91c1c;
+      box-shadow: 0 4px 10px rgba(185, 28, 28, 0.3);
+    }
+
+    /* ---------- Animaciones ---------- */
+    @keyframes aparecer {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes aparecer-fondo {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    /* Respetar a quien prefiere menos movimiento */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        transition: none !important;
+        animation: none !important;
+      }
+    }
+
+    /* ---------- Pantallas pequeñas ---------- */
     @media (max-width: 480px) {
+      body {
+        padding: 16px 12px;
+      }
+
       main {
-        padding: 16px;
+        padding: 20px 16px;
+      }
+
+      h1 {
+        font-size: 1.45rem;
       }
     }
   </style>
 </head>
 <body>
   <main>
-    <h1>Lista de tareas</h1>
+    <h1>
+      <span class="icono-titulo">
+        <svg viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M3.5 8.5l3 3 6-7" fill="none" stroke="white" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      Lista de tareas
+    </h1>
+    <p class="subtitulo" id="contador"></p>
 
     <div class="formulario">
       <input type="text" id="nueva-tarea" placeholder="Escribe una tarea...">
@@ -157,7 +307,7 @@
     <p>Confirma borrar tarea no completada?</p>
     <div class="acciones">
       <button id="btn-cancelar" class="secundario">Cancelar</button>
-      <button id="btn-confirmar">Confirmar</button>
+      <button id="btn-confirmar" class="peligro">Confirmar</button>
     </div>
   </dialog>
 
@@ -166,22 +316,42 @@
     const campoTexto = document.getElementById("nueva-tarea");
     const botonAgregar = document.getElementById("btn-agregar");
     const listaTareas = document.getElementById("lista-tareas");
+    const contador = document.getElementById("contador");
     const dialogo = document.getElementById("dialogo-confirmar");
     const botonConfirmar = document.getElementById("btn-confirmar");
     const botonCancelar = document.getElementById("btn-cancelar");
 
     // 2. Datos de la app
-    const CLAVE = "tareas-guardadas";   // el "nombre de la etiqueta" en localStorage
-    let tareas = [];                    // la lista de datos de las tareas
-    let tareaPendiente = null;          // la tarea que espera confirmación de borrado
+    const CLAVE = "tareas-guardadas";
+    let tareas = [];
+    let tareaPendiente = null;
 
-    // 3. Guardar y cargar
+    // 3. Contador del subtítulo
+    function actualizarContador() {
+      const total = tareas.length;
+      const completadas = tareas.filter(function (t) {
+        return t.completada;
+      }).length;
+      const pendientes = total - completadas;
+
+      if (total === 0) {
+        contador.textContent = "Aún no hay tareas";
+        return;
+      }
+
+      const textoPendientes = pendientes + (pendientes === 1 ? " pendiente" : " pendientes");
+      const textoCompletadas = completadas + (completadas === 1 ? " completada" : " completadas");
+      contador.textContent = textoPendientes + " · " + textoCompletadas;
+    }
+
+    // 4. Guardar y cargar
     function guardar() {
       try {
         localStorage.setItem(CLAVE, JSON.stringify(tareas));
       } catch (error) {
         console.error("No se pudo guardar:", error);
       }
+      actualizarContador();
     }
 
     function cargar() {
@@ -198,7 +368,7 @@
       }
     }
 
-    // 4. Dibujar una tarea en pantalla (a partir de sus datos)
+    // 5. Dibujar una tarea en pantalla (a partir de sus datos)
     function crearElementoTarea(tarea) {
       const li = document.createElement("li");
       li.classList.toggle("completada", tarea.completada);
@@ -213,7 +383,6 @@
       const botonBorrar = document.createElement("button");
       botonBorrar.textContent = "Borrar";
 
-      // Cambiar el estado completada / no completada
       function cambiarEstado(completada) {
         tarea.completada = completada;
         check.checked = completada;
@@ -229,7 +398,6 @@
         cambiarEstado(!tarea.completada);
       });
 
-      // Borrar: directo si está completada, con confirmación si no
       botonBorrar.addEventListener("click", function () {
         if (tarea.completada) {
           borrarTarea(tarea, li);
@@ -245,7 +413,7 @@
       return li;
     }
 
-    // 5. Agregar y borrar
+    // 6. Agregar y borrar
     function agregarTarea() {
       const texto = campoTexto.value.trim();
 
@@ -275,7 +443,7 @@
       guardar();
     }
 
-    // 6. Escuchar los eventos del usuario
+    // 7. Escuchar los eventos del usuario
     botonAgregar.addEventListener("click", agregarTarea);
 
     campoTexto.addEventListener("keydown", function (evento) {
@@ -299,11 +467,12 @@
       tareaPendiente = null;
     });
 
-    // 7. Al abrir la página: cargar las tareas guardadas y dibujarlas
+    // 8. Al abrir la página: cargar las tareas guardadas y dibujarlas
     tareas = cargar();
     tareas.forEach(function (tarea) {
       listaTareas.appendChild(crearElementoTarea(tarea));
     });
+    actualizarContador();
   </script>
 </body>
 </html>
